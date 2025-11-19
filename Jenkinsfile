@@ -2,8 +2,6 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'ahmedmelki/student-management'
-        DOCKER_TAG = "${env.BUILD_ID}"
         DOCKERHUB_CREDENTIALS = 'student-management-docker'
     }
     
@@ -25,7 +23,9 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo '🐳 Construction Docker Image...'
-                bat 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .'
+                script {
+                    bat "docker build -t ahmedmelki/student-management:${env.BUILD_ID} ."
+                }
             }
         }
         
@@ -38,8 +38,8 @@ pipeline {
                         usernameVariable: 'DOCKER_USERNAME',
                         passwordVariable: 'DOCKER_PASSWORD'
                     )]) {
-                        bat 'echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin'
-                        bat 'docker push ${DOCKER_IMAGE}:${DOCKER_TAG}'
+                        bat "echo %DOCKER_PASSWORD% | docker login -u %DOCKER_USERNAME% --password-stdin"
+                        bat "docker push ahmedmelki/student-management:${env.BUILD_ID}"
                     }
                 }
             }
