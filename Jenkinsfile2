@@ -7,7 +7,11 @@ pipeline {
         stage('Scan') {
             steps {
                 withSonarQubeEnv(installationName: 'ahmed') {
-                    sh './mvmw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
+                    // Solution 1: Commande standard
+                    sh 'mvn clean verify sonar:sonar'
+                    
+                    // OU Solution 2: Si vous voulez utiliser le wrapper
+                    // sh './mvnw clean verify sonar:sonar'
                 }
             }
         }
